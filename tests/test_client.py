@@ -8,10 +8,10 @@ import requests
 
 def test_generate():
   """Test non-streaming generation."""
-  url = "http://localhost:8001/llm-api/v1/generate"
+  url = "http://192.168.51.164:8001/llm-api/v1/generate"
 
   payload = {
-    "prompt": "What is the capital of France?",
+    "prompt": 'Return the PO number, date, and the total price without a currency sign of this PO document in the following JSON format and do not give me any other text: { "PONumber": "#####", "Date": YY/MM/DD, "Price": #### }\nThis is the PO document converted to a string: \nHaytek Millwright Services, LLCPurchase OrderDATE:8/14/2025ORDER #:PO-3120VENDORSHIP TOBen BelknapAcSYS Engineering LLC1095 W Melody AveGilbert, AZ 85233USAJosh TaitHaytek Millwright Services LLC4274 E 30th PlaceYuma, AZ 85365USAjosh@haytek.org(928) 750-5126ItemDescriptionPart NumberQtyRateAmtRec’d300-A05B-2518-D006 - Switch - Enable/On/OffFanuc Teach Pendant "Enable/On/Off" SwitchA05B-2518-D0061$260.00$260.000TOTAL$260.00\n',
     "max_tokens": 100,
     "temperature": 0.7,
   }
@@ -32,7 +32,7 @@ def test_generate():
 
 def test_generate_stream():
   """Test streaming generation."""
-  url = "http://localhost:8001/llm-api/v1/generate/stream"
+  url = "http://192.168.51.164:8001/llm-api/v1/generate/stream"
 
   payload = {
     "prompt": "Write a haiku about programming",
@@ -68,7 +68,7 @@ def test_generate_stream():
 
 def test_health():
   """Test health check."""
-  url = "http://localhost:8001/llm-api/v1/health"
+  url = "http://192.168.51.164:8001/llm-api/v1/health"
 
   print("\n\nTesting health check...")
   response = requests.get(url, timeout=30)
@@ -83,7 +83,7 @@ def test_health():
 
 def test_model_info():
   """Test model info."""
-  url = "http://localhost:8001/llm-api/v1/model/info"
+  url = "http://192.168.51.164:8001/llm-api/v1/model/info"
 
   print("\n\nTesting model info...")
   response = requests.get(url, timeout=30)

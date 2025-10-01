@@ -59,6 +59,48 @@ class HealthResponse(BaseModel):
   )
 
 
+class DocumentQuestionRequest(BaseModel):
+  """Request model for asking questions about documents."""
+
+  question: str = Field(..., description="The question to ask about the document")
+  max_tokens: int = Field(
+    default=1024, ge=1, le=4096, description="Maximum number of tokens to generate"
+  )
+  temperature: float = Field(
+    default=0.7, ge=0.0, le=2.0, description="Sampling temperature for generation"
+  )
+  top_p: float = Field(
+    default=0.9, ge=0.0, le=1.0, description="Nucleus sampling parameter"
+  )
+  top_k: int = Field(default=40, ge=0, description="Top-k sampling parameter")
+  stop_sequences: list[str] | None = Field(
+    default=None, description="List of sequences that will stop generation"
+  )
+  model: str | None = Field(
+    default=None, description="Model name to use for generation (overrides default)"
+  )
+  context_mode: str = Field(
+    default="full",
+    description="How to include document context (full, summary)",
+  )
+
+  @field_validator("question")
+  @classmethod
+  def question_must_not_be_empty(cls, v: str) -> str:
+    """Validate that question is not empty."""
+    if not v or not v.strip():
+      raise ValueError("Question cannot be empty")
+    return v
+
+  @field_validator("context_mode")
+  @classmethod
+  def validate_context_mode(cls, v: str) -> str:
+    """Validate context mode is valid."""
+    if v not in ("full", "summary"):
+      raise ValueError("context_mode must be either 'full' or 'summary'")
+    return v
+
+
 class ErrorResponse(BaseModel):
   """Response model for errors."""
 

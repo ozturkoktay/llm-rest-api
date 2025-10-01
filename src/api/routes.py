@@ -6,19 +6,21 @@ Following RESTful principles and clean architecture.
 from collections.abc import AsyncGenerator
 import json
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, status
 from fastapi.responses import StreamingResponse
 
 from ..config.logging_config import get_logger
 from ..exceptions import ModelNotFoundError
 from ..models.schemas import (
+  DocumentQuestionRequest,
   ErrorResponse,
   GenerateRequest,
   GenerateResponse,
   HealthResponse,
 )
+from ..services.document_service import DocumentService
 from ..services.llm_service import LLMService
-from .dependencies import get_llm_service
+from .dependencies import get_document_service, get_llm_service
 
 router = APIRouter()
 logger = get_logger()
@@ -204,4 +206,112 @@ async def get_model_info(llm_service: LLMService = Depends(get_llm_service)) -> 
     raise HTTPException(
       status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
       detail=f"Failed to get model info: {str(e)}",
+    ) from e
+
+
+@router.post(
+  "/document/question",
+  response_model=GenerateResponse,
+  status_code=status.HTTP_200_OK,
+  summary="Ask a question about a PDF document",
+  description="Upload a PDF file and ask a question about its content",
+  responses={
+    400: {"model": ErrorResponse, "description": "Bad Request"},
+    500: {"model": ErrorResponse, "description": "Internal Server Error"},
+  },
+)
+async def ask_document_question(
+  file: UploadFile,
+  question: str = Form(..., description="The question to ask about the document"),
+  max_tokens: int = Form(
+    default=1024, ge=1, le=4096, description="Maximum tokens to generate"
+  ),
+  temperature: float = Form(
+    default=0.7, ge=0.0, le=2.0, description="Sampling temperature"
+  ),
+  top_p: float = Form(default=0.9, ge=0.0, le=1.0, description="Nucleus sampling"),
+  top_k: int = Form(default=40, ge=0, description="Top-k sampling"),
+  model: str | None = Form(default=None, description="Model name to use"),
+  context_mode: str = Form(
+    default="full", description="Context mode: 'full' or 'summary'"
+  ),
+  document_service: DocumentService = Depends(get_document_service),
+) -> GenerateResponse:
+  """Ask a question about a PDF document.
+
+  Args:
+      file: The PDF file to process
+      question: The question to ask about the document
+      max_tokens: Maximum number of tokens to generate
+      temperature: Sampling temperature
+      top_p: Nucleus sampling parameter
+      top_k: Top-k sampling parameter
+      model: Optional model name to use
+      context_mode: How to include context ('full' or 'summary')
+      document_service: Injected document service
+
+  Returns:
+      GenerateResponse with the answer to the question
+  """
+  logger.info(
+    f"Received document question request: file={file.filename}, "
+    f"question={question[:50]}..."
+  )
+
+  try:
+    # Validate file type
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+      logger.error(f"Invalid file type: {file.filename}")
+      raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Only PDF files are supported. Please upload a .pdf file.",
+      )
+
+    # Read file content
+    file_content = await file.read()
+    if not file_content:
+      logger.error("Empty file uploaded")
+      raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Uploaded file is empty",
+      )
+
+    logger.info(f"Read {len(file_content)} bytes from {file.filename}")
+
+    # Create request object
+    request = DocumentQuestionRequest(
+      question=question,
+      max_tokens=max_tokens,
+      temperature=temperature,
+      top_p=top_p,
+      top_k=top_k,
+      model=model,
+      context_mode=context_mode,
+    )
+
+    # Process document and generate answer
+    response = await document_service.answer_question_about_document(
+      request, file_content, file.filename
+    )
+
+    logger.success(
+      f"Successfully answered question about {file.filename}: "
+      f"{response.tokens_generated} tokens generated"
+    )
+    return response
+
+  except ValueError as e:
+    logger.error(f"Validation error: {e}")
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+  except ModelNotFoundError as e:
+    logger.error(f"Model not found: {e.model_name}")
+    raise HTTPException(
+      status_code=status.HTTP_404_NOT_FOUND,
+      detail=e.to_dict(),
+    ) from e
+  except Exception as e:
+    logger.exception("Unexpected error during document question processing")
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail=f"Failed to process document question: {str(e)}",
     ) from e

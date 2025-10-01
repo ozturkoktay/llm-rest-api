@@ -19,7 +19,8 @@ dependencies = [
     "httpx",
     "python-multipart",
     "requests",
-    "loguru"
+    "loguru",
+    "pypdf",
 ]
 
 [project.optional-dependencies]
