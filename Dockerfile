@@ -1,4 +1,4 @@
-# Multi-stage build for LLM API
+# Multi-stage build for AcSYS LLMs REST API
 FROM python:3.12-slim as base
 
 WORKDIR /app
@@ -16,9 +16,9 @@ RUN pip install --no-cache-dir -e .
 RUN useradd -m -u 1000 llmapi && chown -R llmapi:llmapi /app
 USER llmapi
 
-EXPOSE 8000
+EXPOSE 8001
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/api/v1/health || exit 1
+    CMD curl -f http://localhost:8001/llm-api/v1/health || exit 1
 
 CMD ["python", "main.py"]

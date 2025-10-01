@@ -1,1 +1,1 @@
-"""LLM API package."""
+"""AcSYS LLMs REST API package."""

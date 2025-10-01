@@ -11,7 +11,7 @@ import requests
 
 def test_model_switching():
   """Test switching between different models."""
-  url = "http://localhost:8000/api/v1/generate"
+  url = "http://localhost:8001/llm-api/v1/generate"
 
   prompt = "What is artificial intelligence?"
   models = ["llama2", "llama3", "mistral", "codellama"]
@@ -49,7 +49,7 @@ def test_model_switching():
 
 def test_default_vs_custom_model():
   """Compare default model vs custom model selection."""
-  url = "http://localhost:8000/api/v1/generate"
+  url = "http://localhost:8001/llm-api/v1/generate"
   prompt = "Hello, how are you?"
 
   print("\n\nDefault vs Custom Model Comparison")
@@ -89,7 +89,7 @@ def test_default_vs_custom_model():
 
 def test_streaming_with_model():
   """Test streaming with model switching."""
-  url = "http://localhost:8000/api/v1/generate/stream"
+  url = "http://localhost:8001/llm-api/v1/generate/stream"
 
   print("\n\nStreaming with Model Switching")
   print("=" * 60)

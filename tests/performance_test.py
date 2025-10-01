@@ -1,4 +1,4 @@
-"""Performance and load testing for the LLM API.
+"""Performance and load testing for the AcSYS LLMs REST API.
 
 Tests concurrent requests and measures response times.
 """
@@ -18,7 +18,7 @@ async def send_request(
   Returns:
       (request_id, response_time_ms, success)
   """
-  url = "http://localhost:8000/api/v1/generate"
+  url = "http://localhost:8001/llm-api/v1/generate"
   payload = {
     "prompt": f"Generate a short response for request {request_id}",
     "max_tokens": 50,
@@ -100,7 +100,7 @@ async def test_health():
   print("Testing health endpoint...")
   async with httpx.AsyncClient() as client:
     try:
-      response = await client.get("http://localhost:8000/api/v1/health")
+      response = await client.get("http://localhost:8001/llm-api/v1/health")
       if response.status_code == status.HTTP_200_OK:
         print("Health check passed")
         print(f"   Response: {response.json()}\n")

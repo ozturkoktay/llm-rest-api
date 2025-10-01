@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "LLM API Quick Start"
+echo "AcSYS LLMs REST API Quick Start"
 echo "====================="
 echo ""
 
@@ -14,7 +14,7 @@ if ! command -v ollama &> /dev/null; then
     exit 1
 fi
 
-if ! curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
+if ! curl -s http://localhost:11434/llm-api/tags > /dev/null 2>&1; then
     echo "Ollama is not running."
     echo "Please start Ollama first."
     echo ""
@@ -38,9 +38,9 @@ pip install -q -e .
 echo ""
 echo "Setup complete!"
 echo ""
-echo "   Starting LLM API server..."
-echo "   API: http://localhost:8000"
-echo "   Docs: http://localhost:8000/docs"
+echo "   Starting AcSYS LLMs REST API server..."
+echo "   API: http://localhost:8001"
+echo "   Docs: http://localhost:8001/docs"
 echo ""
 
 python main.py

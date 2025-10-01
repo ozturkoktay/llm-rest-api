@@ -8,7 +8,7 @@ import httpx
 
 async def test_model_not_found():
   """Test requesting a model that doesn't exist."""
-  base_url = "http://localhost:8000"
+  base_url = "http://localhost:8001"
 
   print("=" * 60)
   print("Testing Model Not Found Feature")
@@ -21,7 +21,7 @@ async def test_model_not_found():
         f"{base_url}/generate",
         json={
           "prompt": "Hello, how are you?",
-          "model": "deepseek-r1",
+          "model": "deepseek-r1:latest",
         },
         timeout=30.0,
       )

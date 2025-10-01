@@ -17,9 +17,9 @@ logger = get_logger()
 @asynccontextmanager
 async def lifespan(app):  # noqa: ARG001
   """Application lifespan manager."""
-  logger.info("Starting LLM API service...")
+  logger.info("Starting AcSYS LLMs REST API service...")
   yield
-  logger.info("Shutting down LLM API service...")
+  logger.info("Shutting down AcSYS LLMs REST API service...")
 
 
 def create_app() -> FastAPI:
@@ -46,17 +46,17 @@ def create_app() -> FastAPI:
       allow_headers=["*"],
     )
 
-  app.include_router(router, prefix="/api/v1", tags=["LLM"])
+  app.include_router(router, prefix="/llm-api/v1", tags=["LLM"])
 
   @app.get("/", tags=["Root"])
   async def root():
     """Root endpoint with API information."""
     return JSONResponse(
       {
-        "message": "LLM API Service",
+        "message": "AcSYS LLMs REST API Service",
         "version": settings.api_version,
         "docs": "/docs",
-        "health": "/api/v1/health",
+        "health": "/llm-api/v1/health",
       }
     )
 

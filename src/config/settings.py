@@ -6,11 +6,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
   """Application settings."""
 
-  api_title: str = "LLM API"
+  api_title: str = "AcSYS LLMs REST API"
   api_version: str = "1.0.0"
   api_description: str = "Professional REST API for Local LLM Models"
   api_host: str = "0.0.0.0"  # noqa: S104
-  api_port: int = 8000
+  api_port: int = 8001
 
   model_path: str = ""
   model_type: str = "ollama"

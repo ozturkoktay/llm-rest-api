@@ -1,4 +1,4 @@
-"""Example client for testing the LLM API."""
+"""Example client for testing the AcSYS LLMs REST API."""
 
 import json
 
@@ -8,7 +8,7 @@ import requests
 
 def test_generate():
   """Test non-streaming generation."""
-  url = "http://localhost:8000/api/v1/generate"
+  url = "http://localhost:8001/llm-api/v1/generate"
 
   payload = {
     "prompt": "What is the capital of France?",
@@ -32,7 +32,7 @@ def test_generate():
 
 def test_generate_stream():
   """Test streaming generation."""
-  url = "http://localhost:8000/api/v1/generate/stream"
+  url = "http://localhost:8001/llm-api/v1/generate/stream"
 
   payload = {
     "prompt": "Write a haiku about programming",
@@ -68,7 +68,7 @@ def test_generate_stream():
 
 def test_health():
   """Test health check."""
-  url = "http://localhost:8000/api/v1/health"
+  url = "http://localhost:8001/llm-api/v1/health"
 
   print("\n\nTesting health check...")
   response = requests.get(url, timeout=30)
@@ -83,7 +83,7 @@ def test_health():
 
 def test_model_info():
   """Test model info."""
-  url = "http://localhost:8000/api/v1/model/info"
+  url = "http://localhost:8001/llm-api/v1/model/info"
 
   print("\n\nTesting model info...")
   response = requests.get(url, timeout=30)

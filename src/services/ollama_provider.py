@@ -144,6 +144,7 @@ class OllamaProvider(ILLMProvider):
     """
     try:
       response = await self.client.get(f"{self.base_url}/api/tags")
+      print("Model tags response status code:", response.status_code)
       if response.status_code != status.HTTP_200_OK:
         return False
 
@@ -157,6 +158,7 @@ class OllamaProvider(ILLMProvider):
       for model in models:
         model_full_name = model.get("name", "").lower()
         model_base_name = model.get("model", "").lower()
+        print(model_full_name, model_base_name, model_name_normalized)
 
         if (
           model_name_normalized in (model_full_name, model_base_name)

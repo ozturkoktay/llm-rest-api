@@ -75,8 +75,7 @@ class LLMService:
         Chunks of generated text
     """
     provider = self._get_provider_for_request(request, model_override)
-    stream = await provider.generate_stream(request)
-    async for chunk in stream:
+    async for chunk in provider.generate_stream(request):  # type: ignore  # noqa: PGH003
       yield chunk
 
   async def check_health(self) -> bool:

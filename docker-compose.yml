@@ -4,10 +4,10 @@ services:
   llm-api:
     build: .
     ports:
-      - "8000:8000"
+      - "8001:8001"
     environment:
       - API_HOST=0.0.0.0
-      - API_PORT=8000
+      - API_PORT=8001
       - MODEL_TYPE=ollama
       - MODEL_NAME=llama2
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
@@ -16,7 +16,7 @@ services:
       - ./src:/app/src:ro
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8001/llm-api/v1/health"]
       interval: 30s
       timeout: 10s
       retries: 3

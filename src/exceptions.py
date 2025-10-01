@@ -1,4 +1,4 @@
-"""Custom exceptions for the LLM API."""
+"""Custom exceptions for the AcSYS LLMs REST API."""
 
 
 class ModelNotFoundError(Exception):

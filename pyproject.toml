@@ -72,7 +72,8 @@ ignore = [
     "ERA001", # commented out code
     "S311",
     "S603", # subprocess use (false positives)
-    "S607"
+    "S607",
+    "PGH003"
 ]
 
 [tool.hatch.version]
