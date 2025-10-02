@@ -14,3 +14,5 @@ logs/
 *.log
 *.log.gz
 *.md
+.env
+.pdf

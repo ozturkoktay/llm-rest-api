@@ -11,7 +11,7 @@ fi
 
 PDF_FILE="$1"
 QUESTION="$2"
-API_URL="http://localhost:8000/document/question"
+API_URL="http://0.0.0.0:8001/llm-api/v1/document/question"
 
 if [ ! -f "$PDF_FILE" ]; then
     echo "Error: File '$PDF_FILE' not found!"
